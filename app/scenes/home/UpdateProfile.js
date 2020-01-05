@@ -39,11 +39,17 @@ export default function UpdateProfile (props) {
 
     let formProps = {title: "Submit", fields, onSubmit, loading };
     return (
-        <View style={{flex:1, paddingHorizontal: 16}}>
+        <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
             <View style={{flex:1}}>
                 <ErrorText error={error}/>
                 <Form {...formProps}/>
             </View>
         </View>
     );
+};
+
+UpdateProfile.navigationOptions = ({}) => {
+    return {
+        title: `Update Profile`
+    }
 };
