@@ -1,12 +1,11 @@
 {
   "expo": {
-    "name": "React Native Authentication",
-    "slug": "react-native-authentication",
+    "name": "Mesan React Native Authentication",
+    "slug": "mesan-react-native-authentication",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
-      "android",
       "web"
     ],
     "version": "1.0.0",
@@ -24,7 +23,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": false
+    },
+    "description": "A React Native app with authentication including Register, Login, Username, Forgot Password and Update Profile using React Hooks and React Context API.",
+    "githubUrl": "https://github.com/MosesEsan/mesan-react-native-authentication-app"
   }
 }
