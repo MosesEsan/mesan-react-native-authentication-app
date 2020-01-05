@@ -5,7 +5,7 @@ import * as api from "../../services/auth";
 import { useAuth } from "../../provider";
 
 import Form from 'react-native-basic-form';
-import Shared, {ErrorText} from "../../components/Shared";
+import {Header, ErrorText} from "../../components/Shared";
 
 export default function Username (props) {
     const {navigation} = props;
@@ -37,12 +37,18 @@ export default function Username (props) {
 
     let formProps = {title: "Submit", fields, onSubmit, loading };
     return (
-        <View style={{flex:1, paddingHorizontal: 16}}>
-            <Shared title={"Select Username"}/>
+        <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
+            <Header title={"Select Username"}/>
             <View style={{flex:1}}>
                 <ErrorText error={error}/>
                 <Form {...formProps}/>
             </View>
         </View>
     );
+};
+
+Username.navigationOptions = ({}) => {
+    return {
+        title: ``
+    }
 };

@@ -6,7 +6,7 @@ import { useAuth } from "../../provider";
 
 import Form from 'react-native-basic-form';
 import CTA from "../../components/CTA";
-import Shared, {ErrorText} from "../../components/Shared";
+import {Header, ErrorText} from "../../components/Shared";
 
 export default function Login(props) {
     const {navigation} = props;
@@ -43,8 +43,8 @@ export default function Login(props) {
 
     let formProps = {title: "Login", fields, onSubmit, loading};
     return (
-        <View style={{flex: 1, paddingHorizontal: 16}}>
-            <Shared title={"Login"}/>
+        <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
+            <Header title={"Login"}/>
             <View style={{flex: 1}}>
                 <ErrorText error={error}/>
                 <Form {...formProps}>
@@ -62,4 +62,10 @@ export default function Login(props) {
             </View>
         </View>
     );
+};
+
+Login.navigationOptions = ({}) => {
+    return {
+        title: ``
+    }
 };

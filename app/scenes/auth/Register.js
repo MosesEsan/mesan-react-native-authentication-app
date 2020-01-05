@@ -5,7 +5,7 @@ import * as api from "../../services/auth";
 
 import Form from 'react-native-basic-form';
 import CTA from "../../components/CTA";
-import Shared, {ErrorText} from "../../components/Shared";
+import {Header, ErrorText} from "../../components/Shared";
 
 export default function Register(props) {
     const {navigation} = props;
@@ -41,8 +41,8 @@ export default function Register(props) {
 
     let formProps = {title: "Register", fields, onSubmit, loading };
     return (
-        <View style={{flex:1, paddingHorizontal: 16}}>
-            <Shared title={"Register"}/>
+        <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
+            <Header title={"Register"}/>
             <View style={{flex:1}}>
                 <ErrorText error={error}/>
                 <Form {...formProps}>
@@ -55,4 +55,10 @@ export default function Register(props) {
             </View>
         </View>
     );
+};
+
+Register.navigationOptions = ({}) => {
+    return {
+        title: ``
+    }
 };

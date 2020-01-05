@@ -3,11 +3,11 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon, Badge} from 'react-native-elements';
 
 //HEADER COMPONENT
-const Header = (props) => {
-    let {title} = props;
+export const Header = (props) => {
+    let {title, style} = props;
 
     return (
-        <View style={styles.header}>
+        <View style={[styles.header, style]}>
             <Text style={styles.headerText}>
                 {title}
             </Text>
@@ -16,7 +16,8 @@ const Header = (props) => {
 };
 
 Header.defaultProps = {
-    title: ""
+    title: "",
+    style: {}
 };
 
 //ERROR COMPONENT
@@ -46,5 +47,3 @@ const styles = StyleSheet.create({
         color:"red"
     }
 });
-
-export default Header;
