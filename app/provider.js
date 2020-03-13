@@ -19,13 +19,14 @@ function AuthProvider(props) {
     // Get Auth state
     const getAuthState = async () => {
         try {
-            //GET DATA
-            let data = await getStorageData();
+            //GET TOKEN && USER
+            let token = await AsyncStorage.getItem(TOKEN_KEY);
+            let user = await AsyncStorage.getItem(USER_KEY);
 
-            if (data) await handleLogin(data);
-            else await handleLogout(data);
+            if (token !== null && user!== null) await handleLogin({token, user:JSON.parse(user)});
+            else await handleLogout();
 
-            return data;
+            return {token, user};
         } catch (error) {
             throw new Error(error)
         }
@@ -34,9 +35,16 @@ function AuthProvider(props) {
     // Handle Login
     const handleLogin = async (data) => {
         try{
-            await setStorageData(data); //STORE DATA
-            setAuthorization(data.token); //AXIOS AUTHORIZATION HEADER
-            dispatch({type: LOGGED_IN, user:data.user}); //DISPATCH TO REDUCER
+            //STORE DATA
+            let {token, user} = data;
+            let data_ = [[USER_KEY, JSON.stringify(user)], [TOKEN_KEY, token]];
+            await AsyncStorage.multiSet(data_);
+
+            //AXIOS AUTHORIZATION HEADER
+            axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
+            //DISPATCH TO REDUCER
+            dispatch({type: LOGGED_IN, user:data.user});
         }catch (error) {
             throw new Error(error);
         }
@@ -45,9 +53,15 @@ function AuthProvider(props) {
     // Handle Logout
     const handleLogout = async () => {
         try{
-            await setStorageData(); //REMOVE DATA
-            setAuthorization(null); //AXIOS AUTHORIZATION HEADER
-            dispatch({type: LOGGED_OUT});//DISPATCH TO REDUCER
+
+            //REMOVE DATA
+            await AsyncStorage.multiRemove(keys);
+
+            //AXIOS AUTHORIZATION HEADER
+            delete axios.defaults.headers.common["Authorization"];
+
+            //DISPATCH TO REDUCER
+            dispatch({type: LOGGED_OUT});
         }catch (error) {
             throw new Error(error);
         }
@@ -77,37 +91,3 @@ function AuthProvider(props) {
 const useAuth = () => useContext(AuthContext);
 export { AuthContext, useAuth }
 export default AuthProvider;
-
-
-// HELPERS ===================================
-export const setAuthorization = (token) => {
-    // Apply authorization token to every request if logged in
-    if (!token) delete axios.defaults.headers.common["Authorization"];
-    else axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-};
-
-export const getStorageData = async () => {
-    try {
-        let token = await AsyncStorage.getItem(TOKEN_KEY);
-        let user = await AsyncStorage.getItem(USER_KEY);
-
-        if (token !== null && user!== null) return {token, user:JSON.parse(user)};
-        else return null;
-
-    } catch (error) {
-        throw new Error(error)
-    }
-};
-
-export const setStorageData = async (data) => {
-    try {
-        if (!data) await AsyncStorage.multiRemove(keys);
-        else {
-            let {token, user} = data;
-            let data_ = [[USER_KEY, JSON.stringify(user)], [TOKEN_KEY, token]];
-            await AsyncStorage.multiSet(data_);
-        }
-    } catch (error) {
-        throw new Error(error)
-    }
-};
