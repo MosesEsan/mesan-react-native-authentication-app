@@ -22,8 +22,9 @@ function AuthProvider(props) {
             //GET TOKEN && USER
             let token = await AsyncStorage.getItem(TOKEN_KEY);
             let user = await AsyncStorage.getItem(USER_KEY);
+            user = JSON.parse(user);
 
-            if (token !== null && user!== null) await handleLogin({token, user:JSON.parse(user)});
+            if (token !== null && user!== null) await handleLogin({token, user});
             else await handleLogout();
 
             return {token, user};
