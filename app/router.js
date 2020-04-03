@@ -1,30 +1,45 @@
 import React from 'react';
-
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-
+import {createStackNavigator} from 'react-navigation-stack';
 //IMPORT ROUTES
 import AuthStack from "./routes/auth";
-import HomeStack from "./routes/home";
-
 import AuthLoading from "./scenes/auth/AuthLoading";
 import AuthProvider from "./providers/auth";
 
+import {AddEditEventStack, EventProvider, EventStack} from "./routes/event";
+
 //APP ROUTES STACK
-const AppStack = createSwitchNavigator(
+const MainStack = createSwitchNavigator(
     {
         Loading: AuthLoading,
         Auth: AuthStack,
-        App: HomeStack
+        App: EventStack
     },
     {initialRouteName: 'Loading'}
 );
 
-const Navigator = createAppContainer(AppStack);
+const RootStack = createStackNavigator(
+    {
+        Main: {
+            screen: MainStack,
+        },
+        AddEditEvent: {
+            screen: AddEditEventStack,
+        },
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+const Navigator = createAppContainer(RootStack);
 
 export default function Router(props) {
     return (
         <AuthProvider>
-            <Navigator/>
+            <EventProvider>
+                <Navigator/>
+            </EventProvider>
         </AuthProvider>
     );
 }
