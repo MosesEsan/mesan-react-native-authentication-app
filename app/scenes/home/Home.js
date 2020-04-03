@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Text, View, Button, ActivityIndicator, Alert} from 'react-native';
 
-import { useAuth } from "../../provider";
+import { useAuth } from "../../providers/auth";
 
 export default function Home(props) {
     const {navigate} = props.navigation;

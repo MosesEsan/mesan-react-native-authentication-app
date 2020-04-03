@@ -7,7 +7,7 @@ import AuthStack from "./routes/auth";
 import HomeStack from "./routes/home";
 
 import AuthLoading from "./scenes/auth/AuthLoading";
-import AuthProvider from "./provider";
+import AuthProvider from "./providers/auth";
 
 //APP ROUTES STACK
 const AppStack = createSwitchNavigator(
