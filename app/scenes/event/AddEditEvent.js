@@ -17,11 +17,11 @@ export default function AddEditEvent(props) {
     const event = navigation.getParam('event') || null;
 
     //1 - DECLARE VARIABLES
+    const [loading, setLoading] = useState(false);
+
     const {crud, categoryObj} = useEvent();
     let {state, fetch} = categoryObj;
     let {isFetching, error, data} = state;
-
-    const [loading, setLoading] = useState(false);
 
     //==================================================================================================
 
@@ -45,6 +45,9 @@ export default function AddEditEvent(props) {
     async function onSubmit(data) {
         setLoading(true);
 
+        let title = !event ? "Event Added Successfully." : "Event Updated Successfully.";
+        let storeHandler = !event ? crud['add'] : crud['update'];
+
         //convert the date to string
         data['start_date'] = data.start_date.toString();
 
@@ -52,8 +55,6 @@ export default function AddEditEvent(props) {
         else data['end_date'] = data.end_date.toString();
 
         try {
-            let title = !event ? "Event Added Successfully." : "Event Updated Successfully.";
-            let storeHandler = !event ? crud['add'] : crud['update'];
             let response = await createUpdateEvent(data, (event) ? event._id : null);
 
             storeHandler(response.event);
@@ -100,8 +101,8 @@ export default function AddEditEvent(props) {
     }, [data]);
 
     //Form fields
-    const fields = useMemo(() => {
-        let fields_ = [
+    const fields = useMemo(() => (
+        [
             {name: 'image', required: false, type: TYPES.Image},
             {name: 'name', label: 'EVENT NAME', required: true},
             {name: 'category', label: 'CATEGORY', required: true, type: TYPES.Dropdown, options},
@@ -111,19 +112,8 @@ export default function AddEditEvent(props) {
                 {name: 'start_date', label: 'START DATE', required: true, type: TYPES.Date},
                 {name: 'end_date', label: 'END DATE', required: true, type: TYPES.Date}
             ]
-        ];
-
-        //Check if an event was passed- this means we are in edit mode
-        if (event){
-            fields_.map((field, idx) => {
-                let arr = Array.isArray(field);
-                if (!arr) field['value'] = String(event[field.name]) || "";
-                else if (arr) field.map((fld, index) => fld['value'] = String(event[fld.name]) || "")
-            });
-        }
-
-        return fields_;
-    }, [data]);
+        ]
+    ), [data]);
 
     //==================================================================================================
 
@@ -133,6 +123,7 @@ export default function AddEditEvent(props) {
     return (
         <Form
             fields={fields}
+            initialData={event}
             loading={loading}
             title={!event ? 'Create Event' : 'Update Event'}
             error={error}

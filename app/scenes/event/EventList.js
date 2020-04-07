@@ -7,7 +7,7 @@ import {getEvents} from "../../services/event";
 import {useEvent} from "../../providers/event";
 
 import EventItem from "../../components/EventItem";
-import {Footer, NavIcon, Placeholder, FilterView, Panel} from 'mesan-react-native-components'
+import {Empty, Footer, NavIcon, Placeholder, FilterView, Panel} from 'mesan-react-native-components'
 
 import {font} from "../../theme";
 const windowWidth = Dimensions.get('window').width;
@@ -28,7 +28,7 @@ export default function EventList(props) {
 
     //2 - MAIN CODE BEGINS HERE
     useEffect(() => {
-        navigation.setParams({onPress: () => setFilterVisible(true), active: !!(filters && filters.length > 0)});
+        navigation.setParams({onPress: () => setFilterVisible(true)});
         getData()
     }, [filters]);
 
@@ -53,6 +53,8 @@ export default function EventList(props) {
             ...filters
         };
 
+        console.log(params)
+
         fetch(() => getEvents(params), refresh, more);
     }
 
@@ -70,9 +72,7 @@ export default function EventList(props) {
         return <EventItem item={item} index={index} onPress={onPress}/>
     };
 
-
-    //FLATLIST ITEMS
-    //4a - RENDER HEADER
+    //4b - RENDER HEADER
     const renderHeader = () => (
         <Panel title={"This Weekend"}
                data={(filters) ? [] : data}
@@ -81,13 +81,6 @@ export default function EventList(props) {
                containerStyle={{paddingTop: 12}}
                titleStyle={{fontFamily: font,color: "#0E0E27", marginBottom: 4}}
                renderItem={({item}) => <EventItem item={item} isFeatured={true}/>}/>
-    );
-
-    //4b - RENDER EMPTY
-    const renderEmpty = () => (
-        <View>
-            <Text>{"No Events to Display"}</Text>
-        </View>
     );
 
     //4c - RENDER FOOTER
@@ -154,35 +147,36 @@ export default function EventList(props) {
 
     //7 - RENDER VIEW
     if (isFetching || error) return <Placeholder isFetching={isFetching} error={error} onRetry={getData}/>
-    else {
-        return (
-            <FlatList
-                style={{backgroundColor: "#ffffff"}}
-                data={data}
-                extraData={state}
-                initialNumToRender={5}
-                renderItem={renderItem}
-                ListHeaderComponent={renderHeader}
-                ListEmptyComponent={renderEmpty}
-                keyExtractor={keyExtractor}
-                {...loadMoreProps}
-                {...refreshProps}/>
-        );
-    }
+
+    return (
+        <FlatList
+            data={data}
+            extraData={state}
+            initialNumToRender={5}
+            renderItem={renderItem}
+            ListHeaderComponent={renderHeader}
+            ListEmptyComponent={<Empty title={"There are no events available."}/>}
+            style={{backgroundColor: "#ffffff"}}
+            contentContainerStyle={{minHeight: '100%'}}
+            keyExtractor={keyExtractor}
+            {...loadMoreProps}
+            {...refreshProps}/>
+    );
 };
 
 EventList.navigationOptions = ({navigation}) => {
     let onCreate = () => navigation.navigate('AddEditEvent');
     let onPress = navigation.getParam('onPress');
-    let active = navigation.getParam('active');
+    let style = {height: 36, width: 36, borderRadius: 36/2, backgroundColor:"#e4e6eb"};
 
     return {
         title: "Events",
         headerRight: () => (
             <View style={{flexDirection:"row"}}>
-                <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#2C1F8D'}/>
-                <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'}/>
+                <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#4D515D'} style={style}/>
+                <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'} style={style} size={19}/>
             </View>
         )
     };
 };
+

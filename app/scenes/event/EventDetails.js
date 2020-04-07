@@ -1,18 +1,18 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Alert, Image, StyleSheet, Text, View} from 'react-native';
-import moment from "moment";
 
+import moment from "moment";
 import {Icon} from 'react-native-elements';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import {useEvent} from "../../providers/event";
+import {useAuth} from "../../providers/auth";
 import {deleteEvent, getEvent} from "../../services/event";
 
 import {NavIcon, Placeholder} from 'mesan-react-native-components'
 
 import {font} from "../../theme";
 import {showErrorAlert, showSuccessAlert} from "../../utils";
-import {useAuth} from "../../providers/auth";
 
 const EventInfo = ({icon, title, subtitle}) => {
     return (
@@ -117,7 +117,6 @@ export default function EventDetails(props) {
 
         try {
             await deleteEvent(event['_id']);
-
 
             showSuccessAlert("The Event has been deleted successfully.", 'Event Deleted');
 
