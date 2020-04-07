@@ -74,6 +74,26 @@ export async function getCategories(params = {}){
     }
 }
 
+//SEARCH
+export async function search(query, cancelToken){
+    try{
+        //create params object
+        let params = {
+            q:query.toLowerCase(), 
+            cancelToken: cancelToken.token,
+            limit: 500, group: false, sort_order: 'asc'
+        };
+
+        let res = await axios.get(`${CATEGORY}`, {params});
+        return res.data;
+    }catch (error) {
+        let err = new Error(error.message);
+        err.isCancel = (axios.isCancel(error));
+
+        throw err;
+    }
+}
+
 export function handler(err) {
     let error = err;
 
