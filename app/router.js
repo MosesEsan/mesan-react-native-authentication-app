@@ -1,12 +1,13 @@
 import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+
 //IMPORT ROUTES
 import AuthStack from "./routes/auth";
 import AuthLoading from "./scenes/auth/AuthLoading";
 import AuthProvider from "./providers/auth";
 
-import {AddEditEventStack, EventProvider, EventStack} from "./routes/event";
+import {EventProvider, AddEditEventStack, EventStack} from "./routes/event";
 
 //APP ROUTES STACK
 const MainStack = createSwitchNavigator(
