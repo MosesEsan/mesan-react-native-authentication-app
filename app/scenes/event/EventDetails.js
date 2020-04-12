@@ -68,14 +68,14 @@ export default function EventDetails(props) {
         else if (event) {
             setEvent(event);
 
-            let navProps = {};
-            if (event.userId === user._id) navProps = {
-                onEdit: () => onEditEvent(event),
-                onDelete: () => onDelete(event),
-                IsDeleting
+            if (event.userId === user._id){
+                let navProps = {
+                    onEdit: () => onEditEvent(event),
+                    onDelete: () => onDelete(event),
+                    IsDeleting
+                };
+                navigation.setParams(navProps);
             }
-
-            navigation.setParams({title: event.name, ...navProps});
         }
     }
 
@@ -190,12 +190,11 @@ export default function EventDetails(props) {
 };
 
 EventDetails.navigationOptions = ({navigation}) => {
-    let title = navigation.getParam('title');
     let onEdit = navigation.getParam('onEdit') || null;
     let onDelete = navigation.getParam('onDelete') || null;
 
     return {
-        title,
+        title: null,
         headerRight: () => (
             <View style={{flexDirection: "row"}}>
                 {onEdit && <NavIcon type={"entypo"} name={"edit"} onPress={onEdit} color={'#666'}/>}

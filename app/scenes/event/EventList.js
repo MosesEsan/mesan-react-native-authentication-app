@@ -7,7 +7,7 @@ import {getEvents} from "../../services/event";
 import {useEvent} from "../../providers/event";
 
 import EventItem from "../../components/EventItem";
-import {Empty, Footer, NavIcon, Placeholder, FilterView, Panel} from 'mesan-react-native-components'
+import {Empty, Footer, NavIcon, Placeholder, FilterView, Panel, Header} from 'mesan-react-native-components'
 
 import {font} from "../../theme";
 const windowWidth = Dimensions.get('window').width;
@@ -53,8 +53,6 @@ export default function EventList(props) {
             ...filters
         };
 
-        console.log(params)
-
         fetch(() => getEvents(params), refresh, more);
     }
 
@@ -66,23 +64,31 @@ export default function EventList(props) {
     //FLATLIST ITEMS RENDERING
     //4a - RENDER ITEM
     const renderItem = ({item, index}) => {
-        let props = {title: item.name, event: item};
-        let onPress = () => navigate("EventDetails", props);
+        let onPress = () => navigate("EventDetails", {event: item});
 
         return <EventItem item={item} index={index} onPress={onPress}/>
     };
 
     //4b - RENDER HEADER
-    const renderHeader = () => (
-        <Panel title={"This Weekend"}
-               data={(filters) ? [] : data}
-               itemWidth={(windowWidth * .80)}
-               margin={12}
-               containerStyle={{paddingTop: 12}}
-               titleStyle={{fontFamily: font,color: "#0E0E27", marginBottom: 4}}
-               renderItem={({item}) => <EventItem item={item} isFeatured={true}/>}/>
-    );
+    const renderHeader = () => {
 
+        if (selectedFilters.length > 0){
+            let string = selectedFilters.map((filter) => filter.name)
+
+            return <Header title={`${string.join(', ')} Events`}/>
+        }else{
+            return(
+                <Panel title={"Popular"}
+                       data={data}
+                       itemWidth={(windowWidth * .80)}
+                       margin={12}
+                       containerStyle={{paddingTop: 12}}
+                       titleStyle={{fontFamily: font,color: "#0E0E27", marginBottom: 6}}
+                       renderItem={({item}) => <EventItem item={item} isFeatured={true}/>}/>
+            )
+        }
+
+    }
     //4c - RENDER FOOTER
     const renderFooter = () => (
         <View>
@@ -155,7 +161,7 @@ export default function EventList(props) {
             initialNumToRender={5}
             renderItem={renderItem}
             ListHeaderComponent={renderHeader}
-            ListEmptyComponent={<Empty title={"There are no events available."}/>}
+            ListEmptyComponent={() => <Empty message={"There are no events available."}/>}
             style={{backgroundColor: "#ffffff"}}
             contentContainerStyle={{minHeight: '100%'}}
             keyExtractor={keyExtractor}
@@ -166,14 +172,16 @@ export default function EventList(props) {
 
 EventList.navigationOptions = ({navigation}) => {
     let onCreate = () => navigation.navigate('AddEditEvent');
+    let onSearch = () => navigation.navigate('Search');
     let onPress = navigation.getParam('onPress');
-    let style = {height: 36, width: 36, borderRadius: 36/2, backgroundColor:"#e4e6eb"};
+    let style = {height: 40, width: 40, borderRadius: 40/2};
 
     return {
         title: "Events",
         headerRight: () => (
             <View style={{flexDirection:"row"}}>
                 <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#4D515D'} style={style}/>
+                <NavIcon type={"ionicon"} name={"md-search"} onPress={onSearch} color={'#4D515D'} style={style}/>
                 <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'} style={style} size={19}/>
             </View>
         )
