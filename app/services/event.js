@@ -84,7 +84,7 @@ export async function search(query, cancelToken){
             limit: 500, group: false, sort_order: 'asc'
         };
 
-        let res = await axios.get(`${CATEGORY}`, {params});
+            let res = await axios.get(`${EVENT}`, {params});
         return res.data;
     }catch (error) {
         let err = new Error(error.message);
