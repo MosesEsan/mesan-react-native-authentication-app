@@ -170,6 +170,7 @@ export default function EventDetails(props) {
             backgroundColor="#ccc"
             contentBackgroundColor="#fff"
             parallaxHeaderHeight={300}
+            showsVerticalScrollIndicator={false}
             {...refreshProps}
             renderBackground={() => <Image source={{uri: event.image, width: window.width, height: 350}}/>}>
             <View style={styles.wrapper}>

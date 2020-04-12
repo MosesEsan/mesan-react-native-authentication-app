@@ -28,7 +28,7 @@ export default function EventList(props) {
 
     //2 - MAIN CODE BEGINS HERE
     useEffect(() => {
-        navigation.setParams({onPress: () => setFilterVisible(true)});
+        navigation.setParams({onPress: () => setFilterVisible(true), badge:selectedFilters.length});
         getData()
     }, [filters]);
 
@@ -63,32 +63,32 @@ export default function EventList(props) {
 
     //FLATLIST ITEMS RENDERING
     //4a - RENDER ITEM
-    const renderItem = ({item, index}) => {
+    const renderItem = (props) => {
+        let {item, index} = props;
         let onPress = () => navigate("EventDetails", {event: item});
 
-        return <EventItem item={item} index={index} onPress={onPress}/>
+        return <EventItem item={item} index={index} onPress={onPress} isFeatured={props.isFeatured || false}/>
+    };
+
+    //4b - RENDER EMPTY
+    const renderEmpty = () => {
+        let string = selectedFilters.map((filter) => filter.name);
+        let message = selectedFilters.length > 0 ? `No events matches your filter(s):\n ${string.join(', ')}` : "There are no events available.";
+
+        return <Empty message={message}/>
     };
 
     //4b - RENDER HEADER
-    const renderHeader = () => {
+    const renderHeader = () => (
+        <Panel title={"Popular"}
+               data={selectedFilters.length > 0 ? [] : data}
+               itemWidth={(windowWidth * .80)}
+               margin={12}
+               containerStyle={{paddingTop: 12}}
+               titleStyle={{fontFamily: font, color: "#0E0E27", marginBottom: 6}}
+               renderItem={({item}) => renderItem({item, isFeatured: true})}/>
+    );
 
-        if (selectedFilters.length > 0){
-            let string = selectedFilters.map((filter) => filter.name)
-
-            return <Header title={`${string.join(', ')} Events`}/>
-        }else{
-            return(
-                <Panel title={"Popular"}
-                       data={data}
-                       itemWidth={(windowWidth * .80)}
-                       margin={12}
-                       containerStyle={{paddingTop: 12}}
-                       titleStyle={{fontFamily: font,color: "#0E0E27", marginBottom: 6}}
-                       renderItem={({item}) => <EventItem item={item} isFeatured={true}/>}/>
-            )
-        }
-
-    }
     //4c - RENDER FOOTER
     const renderFooter = () => (
         <View>
@@ -108,7 +108,7 @@ export default function EventList(props) {
     // 6 - FLATLIST PROPS
     const keyExtractor = (item, index) => `event_${item._id.toString()}${index.toString()}`;
     const refreshProps = {refreshing: isRefreshing, onRefresh};
-    const loadMoreProps = {onEndReached, onEndReachedThreshold: 0, ListFooterComponent: renderFooter};
+    const loadMoreProps = {onEndReached, onEndReachedThreshold: 0};
 
     //==================================================================================================
 
@@ -117,11 +117,7 @@ export default function EventList(props) {
         if (filters) return filters;
         else {
             //CATEGORIES
-            let categories_ = [];
-            categories.map((category, idx) => {
-                let {_id, name} = category;
-                categories_.push({name, category: _id})
-            });
+            let categories_ = categories.map((category, idx) => ({name: category.name, category: category._id}));
 
             //DATE FILTERS
             let dateFilters = [
@@ -152,7 +148,7 @@ export default function EventList(props) {
     //==================================================================================================
 
     //7 - RENDER VIEW
-    if (isFetching || error) return <Placeholder isFetching={isFetching} error={error} onRetry={getData}/>
+    if (isFetching || error) return <Placeholder isFetching={isFetching} error={error} onRetry={getData}/>;
 
     return (
         <FlatList
@@ -160,8 +156,9 @@ export default function EventList(props) {
             extraData={state}
             initialNumToRender={5}
             renderItem={renderItem}
+            ListEmptyComponent={renderEmpty}
             ListHeaderComponent={renderHeader}
-            ListEmptyComponent={() => <Empty message={"There are no events available."}/>}
+            ListFooterComponent={renderFooter}
             style={{backgroundColor: "#ffffff"}}
             contentContainerStyle={{minHeight: '100%'}}
             keyExtractor={keyExtractor}
@@ -171,18 +168,21 @@ export default function EventList(props) {
 };
 
 EventList.navigationOptions = ({navigation}) => {
+    let onPress = navigation.getParam('onPress');
+    let badge = navigation.getParam('badge') || 0;
+
     let onCreate = () => navigation.navigate('AddEditEvent');
     let onSearch = () => navigation.navigate('Search');
-    let onPress = navigation.getParam('onPress');
+
     let style = {height: 40, width: 40, borderRadius: 40/2};
 
     return {
         title: "Events",
         headerRight: () => (
             <View style={{flexDirection:"row"}}>
-                <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#4D515D'} style={style}/>
-                <NavIcon type={"ionicon"} name={"md-search"} onPress={onSearch} color={'#4D515D'} style={style}/>
-                <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'} style={style} size={19}/>
+                <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#4D515D'} style={style} size={25}/>
+                <NavIcon type={"ionicon"} name={"md-search"} onPress={onSearch} color={'#4D515D'} style={style} size={25}/>
+                <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'} style={style} size={22} badge={badge}/>
             </View>
         )
     };
