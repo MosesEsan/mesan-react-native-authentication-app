@@ -7,12 +7,16 @@ import EventProvider from "../providers/event";
 import EventListScreen from "../scenes/event/EventList";
 import EventDetailsScreen from "../scenes/event/EventDetails";
 import AddEditEventScreen from "../scenes/event/AddEditEvent";
+import SearchScreen from "../scenes/event/Search";
+
+
 import {headerStyle, headerTitleStyle} from "../theme";
 
 const EventStack = createStackNavigator(
     {
         EventList: EventListScreen,
         EventDetails: EventDetailsScreen,
+        Search: SearchScreen,
     },
     {
         initialRouteName: 'EventList',
