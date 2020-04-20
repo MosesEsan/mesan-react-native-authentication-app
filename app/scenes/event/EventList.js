@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {FlatList, Text, View, Dimensions} from 'react-native';
+import {FlatList, View, Dimensions} from 'react-native';
 
 import moment from "moment";
 
@@ -7,7 +7,7 @@ import {getEvents} from "../../services/event";
 import {useEvent} from "../../providers/event";
 
 import EventItem from "../../components/EventItem";
-import {Empty, Footer, NavIcon, Placeholder, FilterView, Panel, Header} from 'mesan-react-native-components'
+import {Empty, Footer, NavIcon, Placeholder, FilterView, Panel} from 'mesan-react-native-components'
 
 import {font} from "../../theme";
 const windowWidth = Dimensions.get('window').width;
@@ -22,7 +22,7 @@ export default function EventList(props) {
     const [filterVisible, setFilterVisible] = useState(false);
 
     const {state, fetch} = useEvent();
-    let {isFetching, isRefreshing, error, data, categories} = state;
+    let {isFetching, isRefreshing, error, data, categories, popular} = state;
 
     //==================================================================================================
 
@@ -81,7 +81,7 @@ export default function EventList(props) {
     //4b - RENDER HEADER
     const renderHeader = () => (
         <Panel title={"Popular"}
-               data={selectedFilters.length > 0 ? [] : data}
+               data={selectedFilters.length > 0 ? [] : popular}
                itemWidth={(windowWidth * .80)}
                margin={12}
                containerStyle={{paddingTop: 12}}

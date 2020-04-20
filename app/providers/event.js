@@ -8,7 +8,7 @@ import useActionCreator from "../utils/useActionCreator";
 const EventContext = React.createContext();
 
 function EventProvider(props) {
-    const {state, dispatch, fetch, crud, getStateData} = useActionCreator("events", ["categories"]);
+    const {state, dispatch, fetch, crud, getStateData} = useActionCreator("events", ["categories", "popular"]);
     const categoryObj = useActionCreator("categories");
 
     const value = useMemo(() => {
