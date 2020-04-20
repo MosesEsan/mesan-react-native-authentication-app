@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Mesan React Native Authentication",
-    "slug": "mesan-react-native-authentication",
+    "name": "Mesan React Native Authentication And CRUD",
+    "slug": "mesan-react-native-authentication-and-crud",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "web"
     ],
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -25,7 +25,7 @@
     "ios": {
       "supportsTablet": false
     },
-    "description": "A React Native app with authentication including Register, Login, Username, Forgot Password and Update Profile using React Hooks and React Context API.",
+    "description": "A React Native app using React Hooks and React Context API with:\n\nAuthentication: \nRegister\nLogin\nUsername\nForgot Password \nUpdate Profile \n\nCRUD operations:\nView All Events\nCreate a New Event\nUpdate and Delete any Event created by the user\nFilter Events by Categories and Dates (Today, Tomorrow, This Week, This Weekend)\nSearch for Events",
     "githubUrl": "https://github.com/MosesEsan/mesan-react-native-authentication-app"
   }
 }
