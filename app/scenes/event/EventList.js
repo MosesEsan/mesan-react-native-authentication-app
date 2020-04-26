@@ -39,7 +39,7 @@ export default function EventList(props) {
         let filters = {};
 
         //Apply any selected filter
-        selectedFilters.map((filter, idx) => {
+        selectedFilters.map((filter) => {
             const {name, ...clone} = filter;
             filters = {...filters, ...clone};
         });
@@ -106,7 +106,7 @@ export default function EventList(props) {
     //==================================================================================================
 
     // 6 - FLATLIST PROPS
-    const keyExtractor = (item, index) => `event_${item._id.toString()}${index.toString()}`;
+    const keyExtractor = (item, index) => `event_${item['_id'].toString()}${index.toString()}`;
     const refreshProps = {refreshing: isRefreshing, onRefresh};
     const loadMoreProps = {onEndReached, onEndReachedThreshold: 0};
 
@@ -117,7 +117,7 @@ export default function EventList(props) {
         if (filters) return filters;
         else {
             //CATEGORIES
-            let categories_ = categories.map((category, idx) => ({name: category.name, category: category._id}));
+            let categories_ = categories.map((category) => ({name: category.name, category: category['_id']}));
 
             //DATE FILTERS
             let dateFilters = [
@@ -135,7 +135,15 @@ export default function EventList(props) {
                 },
             ];
 
-            return [{title: "By Date", options: dateFilters}, {title: "Categories", options: categories_}];
+            //SORT BY FILTERS
+            let sortByFilters = [
+                {name: "Most Recent", sort_by: "createdAt", sort_order:'desc'},
+                {name: "Oldest", sort_by: "createdAt", sort_order:'asc'},
+                {name: "Name - A-Z", sort_by: "name", sort_order:'asc'},
+                {name: "Name - Z-A", sort_by: "name", sort_order:'desc'}
+            ];
+
+            return [{title: "Sort By", options: sortByFilters}, {title: "By Date", options: dateFilters}, {title: "Categories", options: categories_}];
         }
     }, [categories]);
 
