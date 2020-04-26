@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {FlatList, View, StyleSheet} from 'react-native';
+import {FlatList, View, StyleSheet, Alert} from 'react-native';
 
-import {getEvents} from "../../services/event";
+import {deleteEvent, getEvents} from "../../services/event";
 import {useAuth} from "../../providers/auth";
 import {useProfile} from "../../providers/profile";
 
 import EventItem from "../../components/EventItem";
 import UserPanel from "../../components/UserPanel";
 import {Empty, FilterView, Footer, Placeholder, Header} from 'mesan-react-native-components'
+import {showErrorAlert, showSuccessAlert} from "../../utils";
 
 export default function Profile(props) {
     const {navigation} = props;
@@ -17,11 +18,12 @@ export default function Profile(props) {
     const [filters, setFilters] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState([]);
     const [filterVisible, setFilterVisible] = useState(false);
+    const [isDeleting, setDeleting] = useState(false);
 
     const authObj = useAuth();
     const user = authObj.state.user;
 
-    const {state, fetch} = useProfile();
+    const {state, fetch, crud} = useProfile();
     let {isFetching, isRefreshing, error, data} = state;
 
     //==================================================================================================
@@ -62,13 +64,39 @@ export default function Profile(props) {
 
     //==================================================================================================
 
+    //4 - ON EDIT
+    const onEditEvent = (event) => navigate('AddEditEvent', {event});
+
+    //4b - ON DELETE
+    async function onDeleteEvent(event) {
+        setDeleting(true);
+
+        try {
+            await deleteEvent(event['_id']);
+
+            showSuccessAlert("The Event has been deleted successfully.", 'Event Deleted');
+
+            setDeleting(false);
+
+            crud.delete(event);
+
+        } catch (error) {
+            showErrorAlert(error.message);
+            setDeleting(false);
+        }
+    }
+
+    //==================================================================================================
+
     //FLATLIST ITEMS RENDERING
     //4a - RENDER ITEM
     const renderItem = (props) => {
         let {item, index} = props;
-        let onPress = () => navigate("EventDetails", {event: item});
+        let onPress = () => navigate("MyEventDetails", {event: item});
+        let onEdit = () => onEditEvent(item);
+        let onDelete = () => onDeleteEvent(item);
 
-        return <EventItem item={item} index={index} onPress={onPress} isFeatured={props.isFeatured || false}/>
+        return <EventItem item={item} index={index} onPress={onPress} onEdit={onEdit} onDelete={onDelete}/>
     };
 
     //4b - RENDER EMPTY
@@ -84,7 +112,6 @@ export default function Profile(props) {
         return (
             <View>
                 <UserPanel/>
-
                 <Header title={"My Events"} onPress={() => setFilterVisible(true)}
                         containerStyle={styles.headerContainer}
                         headerText={{}}
