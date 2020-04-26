@@ -5,13 +5,21 @@ import moment from "moment";
 
 import {font} from "../theme"
 
+import SwipeableRow from "../components/SwipeableRow";
+
 export default function EventItem(props) {
     const {isFeatured} = props;
+    let showControls = props.onEdit || props.onDelete;
 
     if (isFeatured) return(
         <View style={[styles.featuredContainer, {}]}>
             <Component {...props} style={styles.innerContainer} imageStyle={{width: "100%", height: 140}}/>
         </View>
+    );
+    else if (showControls) return(
+        <SwipeableRow onEdit={props.onEdit} onDelete={props.onDelete} >
+            <Component {...props} style={styles.wrapper} imageStyle={styles.image}/>
+        </SwipeableRow>
     );
     else return <Component {...props} style={styles.wrapper} imageStyle={styles.image}/>
 }
@@ -47,7 +55,13 @@ export function Component(props) {
 EventItem.defaultProps = {
     item: null,
     onPress: null,
-    isFeatured: false
+
+    isFeatured: false,
+    showControls: false,
+
+
+    onEdit: null,
+    onDelete: null,
 };
 
 const styles = StyleSheet.create({
