@@ -6,13 +6,12 @@ import {Icon} from 'react-native-elements';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import {useEvent} from "../../providers/event";
-import {useAuth} from "../../providers/auth";
-import {deleteEvent, getEvent} from "../../services/event";
+import {getEvent} from "../../services/event";
 
-import {NavIcon, Placeholder} from 'mesan-react-native-components'
+import {Placeholder} from 'mesan-react-native-components'
 
 import {font} from "../../theme";
-import {showErrorAlert, showSuccessAlert} from "../../utils";
+import {showErrorAlert} from "../../utils";
 
 const EventInfo = ({icon, title, subtitle}) => {
     return (
@@ -39,14 +38,9 @@ export default function EventDetails(props) {
 
     const [isFetching, setIsFetching] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [IsDeleting, setDeleting] = useState(false);
 
     const {state, crud, getStateData} = useEvent();
     const {data} = state;
-
-    //access user data
-    const auth = useAuth();
-    const user = auth['state']['user'];
 
     //==================================================================================================
 
@@ -65,18 +59,7 @@ export default function EventDetails(props) {
         setIsFetching(false);
 
         if (!event) navigation.goBack();
-        else if (event) {
-            setEvent(event);
-
-            if (event.userId === user._id){
-                let navProps = {
-                    onEdit: () => onEditEvent(event),
-                    onDelete: () => onDelete(event),
-                    IsDeleting
-                };
-                navigation.setParams(navProps);
-            }
-        }
+        else if (event) setEvent(event);
     }
 
     const onRefresh = useCallback(async () => {
@@ -95,46 +78,12 @@ export default function EventDetails(props) {
 
     //==================================================================================================
 
-    //4 - ON EDIT
-    const onEditEvent = (event) => navigate('AddEditEvent', {event});
-
-    //4b - ON DELETE
-    async function onDelete(event) {
-        Alert.alert(
-            'Delete Event',
-            "Are you sure you want to delete this event?",
-            [
-                {text: 'Delete', onPress: () => onDeleteEvent(event)},
-                {text: 'Cancel', style: 'cancel'}
-            ],
-            {cancelable: true},
-        );
-    }
-
-    //4c - ON DELETE PRODUCT
-    async function onDeleteEvent(event) {
-        setDeleting(true);
-
-        try {
-            await deleteEvent(event['_id']);
-
-            showSuccessAlert("The Event has been deleted successfully.", 'Event Deleted');
-
-            setDeleting(false);
-
-            crud.delete(event);
-
-        } catch (error) {
-            showErrorAlert(error.message);
-            setDeleting(false);
-        }
-    }
+    // 6 - FLATLIST PROPS
+    const refreshProps = {refreshing: isRefreshing, onRefresh};
 
     //==================================================================================================
 
-    // 5 - PROPS
-    const refreshProps = {refreshing: isRefreshing, onRefresh};
-
+    // 6b - FILTERS PROPS
     const date = useMemo(() => {
         if (event) {
             const {start_date, end_date} = event;
@@ -162,7 +111,7 @@ export default function EventDetails(props) {
 
     //==================================================================================================
 
-    //6 - RENDER
+    //7 - RENDER VIEW
     if (isFetching) return <Placeholder isFetching={isFetching}/>;
 
     return (
@@ -190,20 +139,7 @@ export default function EventDetails(props) {
     )
 };
 
-EventDetails.navigationOptions = ({navigation}) => {
-    let onEdit = navigation.getParam('onEdit') || null;
-    let onDelete = navigation.getParam('onDelete') || null;
-
-    return {
-        title: null,
-        headerRight: () => (
-            <View style={{flexDirection: "row"}}>
-                {onEdit && <NavIcon type={"entypo"} name={"edit"} onPress={onEdit} color={'#666'}/>}
-                {onEdit && <NavIcon type={"material-community"} name={"delete"} onPress={onDelete} color={'#666'}/>}
-            </View>
-        )
-    };
-};
+EventDetails.navigationOptions = ({}) =>  ({title: null});
 
 //STYLES
 const styles = StyleSheet.create({
