@@ -11,12 +11,18 @@ import AuthLoading from "./scenes/auth/AuthLoading";
 import AuthProvider from "./providers/auth";
 
 import {ProfileProvider, ProfileStack} from "./routes/profile";
-import {AddEditEventStack, EventProvider, EventStack} from "./routes/event";
+import {AddEditEventStack, EventProvider, EventStack, SearchScreen} from "./routes/event";
 
 const TabNavigator = createBottomTabNavigator(
     {
         Event: EventStack,
-        Profile: ProfileStack
+        Search: SearchScreen,
+        MyEvents: {
+            screen: ProfileStack,
+            navigationOptions: {
+                title: 'My Events',
+            },
+        },
     },
     {
         defaultNavigationOptions: ({navigation}) => ({
@@ -24,10 +30,14 @@ const TabNavigator = createBottomTabNavigator(
                 const {routeName} = navigation.state;
                 let iconName, iconType = 'ionicon';
                 if (routeName === 'Event') {
-                    iconName = `md-list-box`;
-                } else if (routeName === 'Profile') {
-                    iconName = `cart-plus`;
-                    iconType = `material-community`;
+                    iconName = `home`;
+                    iconType = `entypo`;
+                } else if (routeName === 'Search') {
+                    iconName = `search`;
+                    iconType = `font-awesome`;
+                } else if (routeName === 'MyEvents') {
+                    iconName = `heart`;
+                    iconType = `font-awesome`;
                 }
 
                 return <Icon type={iconType} name={iconName} size={22} color={tintColor}/>

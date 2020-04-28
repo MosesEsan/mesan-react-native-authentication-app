@@ -30,4 +30,4 @@ const AddEditEventStack = createStackNavigator(
         }
     }
 );
-export {EventProvider, EventStack, AddEditEventStack}
+export {EventProvider, EventStack, AddEditEventStack, SearchScreen}
