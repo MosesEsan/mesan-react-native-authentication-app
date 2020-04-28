@@ -6,6 +6,7 @@ import * as ImagePicker from "expo-image-picker/build/ImagePicker";
 import Form, {TYPES} from 'react-native-basic-form';
 
 import {useEvent} from "../../providers/event";
+import {useProfile} from "../../providers/profile";
 import {createUpdateEvent, getCategories} from "../../services/event";
 
 import {Placeholder} from 'mesan-react-native-components'
@@ -19,7 +20,8 @@ export default function AddEditEvent(props) {
     //1 - DECLARE VARIABLES
     const [loading, setLoading] = useState(false);
 
-    const {crud, categoryObj} = useEvent();
+    const {crud} = useProfile();
+    const {categoryObj} = useEvent();
     let {state, fetch} = categoryObj;
     let {isFetching, error, data} = state;
 
@@ -46,7 +48,6 @@ export default function AddEditEvent(props) {
         setLoading(true);
 
         let title = !event ? "Event Added Successfully." : "Event Updated Successfully.";
-        let storeHandler = !event ? crud['add'] : crud['update'];
 
         //convert the date to string
         data['start_date'] = data.start_date.toString();
@@ -57,7 +58,9 @@ export default function AddEditEvent(props) {
         try {
             let response = await createUpdateEvent(data, (event) ? event._id : null);
 
-            storeHandler(response.event);
+            if (!event) crud.add(response.event);
+            else crud.update(response.event);
+
             setLoading(false);
 
             showSuccessAlert(response.message, title, () => navigation.pop());

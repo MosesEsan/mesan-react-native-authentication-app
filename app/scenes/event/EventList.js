@@ -135,15 +135,7 @@ export default function EventList(props) {
                 },
             ];
 
-            //SORT BY FILTERS
-            let sortByFilters = [
-                {name: "Most Recent", sort_by: "createdAt", sort_order:'desc'},
-                {name: "Oldest", sort_by: "createdAt", sort_order:'asc'},
-                {name: "Name - A-Z", sort_by: "name", sort_order:'asc'},
-                {name: "Name - Z-A", sort_by: "name", sort_order:'desc'}
-            ];
-
-            return [{title: "Sort By", options: sortByFilters}, {title: "By Date", options: dateFilters}, {title: "Categories", options: categories_}];
+            return [{title: "By Date", options: dateFilters}, {title: "Categories", options: categories_}];
         }
     }, [categories]);
 
@@ -180,7 +172,6 @@ EventList.navigationOptions = ({navigation}) => {
     let badge = navigation.getParam('badge') || 0;
 
     let onCreate = () => navigation.navigate('AddEditEvent');
-    let onSearch = () => navigation.navigate('Search');
 
     let style = {height: 40, width: 40, borderRadius: 40/2};
 
@@ -189,7 +180,6 @@ EventList.navigationOptions = ({navigation}) => {
         headerRight: () => (
             <View style={{flexDirection:"row"}}>
                 <NavIcon type={"ionicon"} name={"md-add"} onPress={onCreate} color={'#4D515D'} style={style} size={25}/>
-                <NavIcon type={"ionicon"} name={"md-search"} onPress={onSearch} color={'#4D515D'} style={style} size={25}/>
                 <NavIcon type={"octicon"} name={"settings"} onPress={onPress} color={'#2C1F8D'} style={style} size={22} badge={badge}/>
             </View>
         )
