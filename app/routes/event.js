@@ -15,8 +15,7 @@ import {headerStyle, headerTitleStyle} from "../theme";
 const EventStack = createStackNavigator(
     {
         EventList: EventListScreen,
-        EventDetails: EventDetailsScreen,
-        Search: SearchScreen,
+        EventDetails: EventDetailsScreen
     },
     {
         initialRouteName: 'EventList',
