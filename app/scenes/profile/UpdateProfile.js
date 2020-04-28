@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import {View} from 'react-native';
 
 import * as api from "../../services/auth";
 import { useAuth } from "../../providers/auth";
 
 import Form from 'react-native-basic-form';
-import {ErrorText} from "../../components/Shared";
 
 export default function UpdateProfile (props) {
     const {navigation} = props;
@@ -13,19 +11,18 @@ export default function UpdateProfile (props) {
     //1 - DECLARE VARIABLES
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
     const { state, updateUser } = useAuth();
+    const user = state.user;
 
-    const fields = [
-        {name: 'firstName', label: 'First Name', required: true, value:state.user.firstName},
-        {name: 'lastName', label: 'Last Name', required: true, value:state.user.lastName},
-        {name: 'username', label: 'Username', required: true, value:state.user.username}
-    ];
+    //==================================================================================================
 
+    //2 - ON SUBMIT
     async function onSubmit(data) {
         setLoading(true);
 
         try {
-            let response = await api.updateProfile(state.user._id, data);
+            let response = await api.updateProfile(state.user['_id'], data);
             updateUser(response.user);
 
             setLoading(false);
@@ -37,14 +34,29 @@ export default function UpdateProfile (props) {
         }
     }
 
-    let formProps = {title: "Submit", fields, onSubmit, loading };
+    //==================================================================================================
+
+    // 3 - FORM PROPS
+    //Form fields
+    const fields = [
+        {name: 'firstName', label: 'First Name', required: true},
+        {name: 'lastName', label: 'Last Name', required: true},
+        {name: 'username', label: 'Username', required: true}
+    ];
+
+    //==================================================================================================
+
+    //7 - RENDER
     return (
-        <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
-            <View style={{flex:1}}>
-                <ErrorText error={error}/>
-                <Form {...formProps}/>
-            </View>
-        </View>
+        <Form
+            fields={fields}
+            initialData={user}
+            loading={loading}
+            title={'Submit'}
+            error={error}
+            onSubmit={onSubmit}
+            buttonStyle={{backgroundColor: "#5070FE"}}
+            style={{backgroundColor: "white", paddingHorizontal: 16}}/>
     );
 };
 
