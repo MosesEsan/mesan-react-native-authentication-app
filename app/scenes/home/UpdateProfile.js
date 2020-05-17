@@ -16,9 +16,9 @@ export default function UpdateProfile (props) {
     const { state, updateUser } = useAuth();
 
     const fields = [
-        {name: 'firstName', label: 'First Name', required: true, value:state.user.firstName},
-        {name: 'lastName', label: 'Last Name', required: true, value:state.user.lastName},
-        {name: 'username', label: 'Username', required: true, value:state.user.username}
+        {name: 'firstName', label: 'First Name', required: true},
+        {name: 'lastName', label: 'Last Name', required: true},
+        {name: 'username', label: 'Username', required: true}
     ];
 
     async function onSubmit(data) {
@@ -37,12 +37,17 @@ export default function UpdateProfile (props) {
         }
     }
 
-    let formProps = {title: "Submit", fields, onSubmit, loading };
     return (
         <View style={{flex: 1, paddingHorizontal: 16, backgroundColor:"#fff"}}>
             <View style={{flex:1}}>
                 <ErrorText error={error}/>
-                <Form {...formProps}/>
+                <Form
+                    fields={fields}
+                    title={'Submit'}
+                    loading={loading}
+                    initialData={state.user}
+                    error={error}
+                    onSubmit={onSubmit}/>
             </View>
         </View>
     );
